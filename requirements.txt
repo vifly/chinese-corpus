@@ -1,0 +1,4 @@
+opencc
+gensim
+jieba
+requests
