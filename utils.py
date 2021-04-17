@@ -1,4 +1,5 @@
 import os
+from typing import Iterable, Iterator
 
 import jieba
 import opencc
@@ -24,9 +25,9 @@ def download_file(url: str, storage_path: str, force_download: bool = False):
                     f.write(chunk)
 
 
-def convert_trad_to_sim(texts: list[str]) -> list[str]:
+def convert_trad_to_sim(texts: Iterable[str]) -> Iterator[str]:
     cc = opencc.OpenCC('t2s')
-    sim_texts = [cc.convert(text) for text in texts]
+    sim_texts = (cc.convert(text) for text in texts)
     return sim_texts
 
 
@@ -37,17 +38,11 @@ def is_chinese(char: str):
         return False
 
 
-def clean_texts(texts: list[str]) -> list[str]:
-    only_chinese_texts = []
+def clean_texts(texts: Iterable[str]) -> Iterator[str]:
     for line in texts:
-        only_chinese_texts.append("".join([c for c in line if is_chinese(c)]))
-
-    return only_chinese_texts
+        yield "".join([c for c in line if is_chinese(c)])
 
 
-def segment(texts: list[str], split_symbol: str = " ") -> list[str]:
-    seg_texts = []
+def segment(texts: Iterable[str], split_symbol: str = " ") -> Iterator[str]:
     for text in texts:
-        seg_texts.append(split_symbol.join(jieba.cut(text, cut_all=False)) + "\n")
-
-    return seg_texts
+        yield split_symbol.join(jieba.cut(text, cut_all=False)) + "\n"

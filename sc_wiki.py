@@ -1,4 +1,5 @@
 import os
+from typing import Iterator
 
 from gensim.corpora import WikiCorpus
 
@@ -12,15 +13,15 @@ def download_latest_wiki(storage_dir: str, force_download: bool):
     download_file(url, os.path.join(storage_dir, WIKI_FILE_NAME), force_download)
 
 
-def get_wiki_original_text(wiki_dump_path: str) -> list[str]:
+def get_wiki_original_text(wiki_dump_path: str) -> Iterator[str]:
     wiki = WikiCorpus(wiki_dump_path, dictionary=[])
-    text_list = [" ".join(t) for t in wiki.get_texts()]
+    text_list = (" ".join(t) for t in wiki.get_texts())
 
     return text_list
 
 
 def get_sc_wiki_corpus(storage_dir: str = "/tmp", force_download: bool = False,
-                       seg_split_symbol: str = " ") -> list[str]:
+                       seg_split_symbol: str = " ") -> Iterator[str]:
     download_latest_wiki(storage_dir, force_download)
     texts = get_wiki_original_text(os.path.join(storage_dir, WIKI_FILE_NAME))
     sc_texts = convert_trad_to_sim(texts)
