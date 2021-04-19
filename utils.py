@@ -38,11 +38,18 @@ def is_chinese(char: str):
         return False
 
 
+def replace_non_chinese_char_with_space(char):
+    if is_chinese(char):
+        return char
+    return " "
+
+
 def clean_texts(texts: Iterable[str]) -> Iterator[str]:
     for line in texts:
-        yield "".join([c for c in line if is_chinese(c)])
+        yield "".join(map(replace_non_chinese_char_with_space, list(line)))
 
 
 def segment(texts: Iterable[str], split_symbol: str = " ") -> Iterator[str]:
     for text in texts:
-        yield split_symbol.join(jieba.cut(text, cut_all=False)) + "\n"
+        yield split_symbol.join((word for word in jieba.cut(text, cut_all=False)
+                                 if word != " "))
