@@ -46,7 +46,7 @@ def replace_non_chinese_char_with_space(char):
 
 def clean_texts(texts: Iterable[str]) -> Iterator[str]:
     for line in texts:
-        yield "".join(map(replace_non_chinese_char_with_space, list(line)))
+        yield "".join(map(replace_non_chinese_char_with_space, line))
 
 
 def segment(texts: Iterable[str], split_symbol: str = " ") -> Iterator[str]:
